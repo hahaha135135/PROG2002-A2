@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Events - Hope Foundation</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- N1 / N2 导航菜单 -->
+    <nav>
+        <div class="logo">Hope Foundation</div>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="search.html" class="active">Search Events</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+
+        <h1>Search Charity Events</h1>
+
+        <!-- S1 / S2 / S3 / S4 搜索表单 -->
+        <form class="search-form" id="search-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="date">Date</label>
+                    <input type="date" id="date" name="date">
+                </div>
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <input type="text" id="location" name="location" placeholder="e.g. Sydney">
+                </div>
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select id="category" name="category">
+                        <option value="">All Categories</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn">Search</button>
+                <button type="button" id="clear-btn" class="btn btn-secondary">Clear Filters</button>
+            </div>
+        </form>
+
+        <!-- S8 错误信息 -->
+        <div id="error-message" class="error-message"></div>
+
+        <!-- S6 结果列表 -->
+        <div id="results" class="event-grid"></div>
+
+    </div>
+
+    <footer>
+        &copy; 2026 Hope Foundation. All rights reserved.
+    </footer>
+
+    <script>
+        const API_BASE = 'http://localhost:3000';
+
+        // S2 动态加载类别下拉菜单
+        async function loadCategories() {
+            try {
+                const response = await fetch(`${API_BASE}/api/categories`);
+                const categories = await response.json();
+                const select = document.getElementById('category');
+                categories.forEach(cat => {
+                    const option = document.createElement('option');
+                    option.value = cat.category_name;
+                    option.textContent = cat.category_name;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Failed to load categories', error);
+            }
+        }
+
+        // S5 提交表单，调用 API 搜索
+        document.getElementById('search-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const date = document.getElementById('date').value;
+            const location = document.getElementById('location').value.trim();
+            const category = document.getElementById('category').value;
+            const resultsDiv = document.getElementById('results');
+            const errorMessage = document.getElementById('error-message');
+
+            errorMessage.style.display = 'none';
+            resultsDiv.innerHTML = '';
+
+            // 构建查询字符串
+            const params = new URLSearchParams();
+            if (date) params.append('date', date);
+            if (location) params.append('location', location);
+            if (category) params.append('category', category);
+
+            try {
+                const response = await fetch(`${API_BASE}/api/events/search?${params.toString()}`);
+                if (!response.ok) {
+                    throw new Error('Search failed');
+                }
+                const events = await response.json();
+
+                if (events.length === 0) {
+                    resultsDiv.innerHTML = '<p class="no-results">No events match your criteria.</p>';
+                    return;
+                }
+
+                resultsDiv.innerHTML = events.map(event => {
+                    const formattedDate = event.event_date.split('T')[0];
+                    return `
+                        <div class="event-card">
+                            <img src="${event.image_url}" alt="${event.event_name}">
+                            <div class="card-body">
+                                <span class="category">${event.category_name}</span>
+                                <h3>${event.event_name}</h3>
+                                <p class="date">📅 ${formattedDate}</p>
+                                <p class="location">📍 ${event.location}</p>
+                                <a href="event.html?id=${event.event_id}" class="btn">View Details</a>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (error) {
+                console.error(error);
+                errorMessage.style.display = 'block';
+                errorMessage.textContent = 'Sorry, something went wrong. Please try again.';
+            }
+        });
+
+        // S4 Clear Filters 按钮，重置所有字段
+        document.getElementById('clear-btn').addEventListener('click', () => {
+            document.getElementById('search-form').reset();
+            document.getElementById('results').innerHTML = '';
+            document.getElementById('error-message').style.display = 'none';
+        });
+
+        loadCategories();
+    </script>
+
+</body>
+</html>

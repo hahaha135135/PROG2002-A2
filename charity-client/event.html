@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Details - Hope Foundation</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- N1 / N2 导航菜单 -->
+    <nav>
+        <div class="logo">Hope Foundation</div>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="search.html">Search Events</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+
+        <!-- D1 只显示被选中活动的详情 -->
+        <div id="event-detail"></div>
+        <div id="error-message" class="error-message"></div>
+
+    </div>
+
+    <!-- D7 模态框 -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal">
+            <h3>Coming Soon</h3>
+            <p>This feature is currently under construction.</p>
+            <button class="btn" onclick="closeModal()">OK</button>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 Hope Foundation. All rights reserved.
+    </footer>
+
+    <script>
+        const API_BASE = 'http://localhost:3000';
+
+        // D2 从 URL Query String 获取 event ID
+        const params = new URLSearchParams(window.location.search);
+        const eventId = params.get('id');
+
+        async function loadEventDetail() {
+            const detailDiv = document.getElementById('event-detail');
+            const errorMessage = document.getElementById('error-message');
+
+            if (!eventId) {
+                errorMessage.style.display = 'block';
+                errorMessage.textContent = 'No event selected. Please go back and choose an event.';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/api/events/${eventId}`);
+                if (!response.ok) {
+                    throw new Error('Event not found');
+                }
+                const event = await response.json();
+
+                const formattedDate = event.event_date.split('T')[0];
+
+                // D5 计算筹款进度百分比
+                const progress = event.goal_amount > 0
+                    ? Math.min((event.raised_amount / event.goal_amount) * 100, 100).toFixed(1)
+                    : 0;
+
+                // D4 票价显示
+                const ticketDisplay = event.ticket_price > 0
+                    ? `$${Number(event.ticket_price).toFixed(2)}`
+                    : 'Free';
+
+                detailDiv.innerHTML = `
+                    <div class="event-detail">
+                        <img src="${event.image_url}" alt="${event.event_name}">
+                        <h1>${event.event_name}</h1>
+                        <span class="category">${event.category_name}</span>
+
+                        <div class="meta">
+                            <span>📅 ${formattedDate}</span>
+                            <span>⏰ ${event.event_time}</span>
+                            <span>📍 ${event.location}</span>
+                        </div>
+
+                        <h3>About This Event</h3>
+                        <p>${event.description}</p>
+
+                        <div class="ticket-box">
+                            <h3>Ticket Information</h3>
+                            <p><strong>Price:</strong> ${ticketDisplay}</p>
+                        </div>
+
+                        <h3>Fundraising Goal</h3>
+                        <p><strong>Goal:</strong> $${Number(event.goal_amount).toFixed(2)}</p>
+                        <p><strong>Raised:</strong> $${Number(event.raised_amount).toFixed(2)}</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progress}%">${progress}%</div>
+                        </div>
+
+                        <div style="margin-top: 25px;">
+                            <button class="btn" onclick="openModal()">Register</button>
+                        </div>
+                    </div>
+                `;
+
+            } catch (error) {
+                console.error(error);
+                errorMessage.style.display = 'block';
+                errorMessage.textContent = 'Sorry, we could not load this event.';
+            }
+        }
+
+        // D7 打开模态框
+        function openModal() {
+            document.getElementById('modal-overlay').classList.add('active');
+        }
+
+        // D7 关闭模态框
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.remove('active');
+        }
+
+        loadEventDetail();
+    </script>
+
+</body>
+</html>

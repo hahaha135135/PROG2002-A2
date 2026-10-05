@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hope Foundation - Charity Events</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- N1 / N2 导航菜单，所有页面共用 -->
+    <nav>
+        <div class="logo">Hope Foundation</div>
+        <ul>
+            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="search.html">Search Events</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+
+        <!-- H1 静态内容：欢迎语、使命、联系方式 -->
+        <section class="hero">
+            <h1>Welcome to Hope Foundation</h1>
+            <p>Join us in making a difference through our upcoming charity events.</p>
+        </section>
+
+        <section class="org-info">
+            <h2>Our Mission</h2>
+            <p>To bring communities together through charitable events and raise funds for those in need.</p>
+            <p style="margin-top: 10px;">
+                <strong>Email:</strong> info@hopefoundation.org &nbsp;|&nbsp;
+                <strong>Phone:</strong> +61 2 1234 5678 &nbsp;|&nbsp;
+                <strong>Address:</strong> 123 Charity Lane, Sydney, NSW 2000
+            </p>
+        </section>
+
+        <!-- H2 动态活动列表 -->
+        <section>
+            <h2>Upcoming Events</h2>
+            <div id="event-list" class="event-grid"></div>
+            <div id="error-message" class="error-message"></div>
+        </section>
+
+    </div>
+
+    <footer>
+        &copy; 2026 Hope Foundation. All rights reserved.
+    </footer>
+
+    <script>
+        // H2 通过 API 获取活动列表
+        const API_BASE = 'http://localhost:3000';
+
+        async function loadEvents() {
+            const eventList = document.getElementById('event-list');
+            const errorMessage = document.getElementById('error-message');
+
+            try {
+                const response = await fetch(`${API_BASE}/api/events`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch events');
+                }
+                const events = await response.json();
+
+                if (events.length === 0) {
+                    eventList.innerHTML = '<p class="no-results">No upcoming events at the moment.</p>';
+                    return;
+                }
+
+                eventList.innerHTML = events.map(event => {
+                    // H5 根据日期判断 past / upcoming
+                    const formattedDate = event.event_date.split('T')[0];
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    const eventDate = new Date(formattedDate + 'T00:00:00');
+                    const isPast = eventDate < today;
+                    const statusClass = isPast ? 'status-past' : 'status-upcoming';
+                    const statusText = isPast ? 'Past' : 'Upcoming';
+
+                    return `
+                        <div class="event-card">
+                            <img src="${event.image_url}" alt="${event.event_name}">
+                            <div class="card-body">
+                                <span class="status-badge ${statusClass}">${statusText}</span>
+                                <span class="category">${event.category_name}</span>
+                                <h3>${event.event_name}</h3>
+                                <p class="date">📅 ${formattedDate}</p>
+                                <p class="location">📍 ${event.location}</p>
+                                <a href="event.html?id=${event.event_id}" class="btn">View Details</a>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (error) {
+                console.error(error);
+                errorMessage.style.display = 'block';
+                errorMessage.textContent = 'Sorry, we could not load events. Please try again later.';
+            }
+        }
+
+        loadEvents();
+    </script>
+
+</body>
+</html>
