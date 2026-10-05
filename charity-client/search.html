@@ -8,7 +8,7 @@
 </head>
 <body>
 
-    <!-- N1 / N2 导航菜单 -->
+    <!-- N1 / N2 Navigation Menu -->
     <nav>
         <div class="logo">Hope Foundation</div>
         <ul>
@@ -21,7 +21,7 @@
 
         <h1>Search Charity Events</h1>
 
-        <!-- S1 / S2 / S3 / S4 搜索表单 -->
+        <!-- S1 / S2 / S3 / S4 Search Form -->
         <form class="search-form" id="search-form">
             <div class="form-row">
                 <div class="form-group">
@@ -45,10 +45,10 @@
             </div>
         </form>
 
-        <!-- S8 错误信息 -->
+        <!-- S8 Error message -->
         <div id="error-message" class="error-message"></div>
 
-        <!-- S6 结果列表 -->
+        <!-- S6 Result List -->
         <div id="results" class="event-grid"></div>
 
     </div>
@@ -60,7 +60,7 @@
     <script>
         const API_BASE = 'http://localhost:3000';
 
-        // S2 动态加载类别下拉菜单
+        // S2 Load category dropdown menu from API call
         async function loadCategories() {
             try {
                 const response = await fetch(`${API_BASE}/api/categories`);
@@ -77,7 +77,7 @@
             }
         }
 
-        // S5 提交表单，调用 API 搜索
+        // S5 Submit form, call search API call
         document.getElementById('search-form').addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -90,7 +90,7 @@
             errorMessage.style.display = 'none';
             resultsDiv.innerHTML = '';
 
-            // 构建查询字符串
+            // Build query string from form inputs
             const params = new URLSearchParams();
             if (date) params.append('date', date);
             if (location) params.append('location', location);
@@ -131,7 +131,7 @@
             }
         });
 
-        // S4 Clear Filters 按钮，重置所有字段
+        // S4 Clear Filters button, reset all form fields
         document.getElementById('clear-btn').addEventListener('click', () => {
             document.getElementById('search-form').reset();
             document.getElementById('results').innerHTML = '';

@@ -8,7 +8,7 @@
 </head>
 <body>
 
-    <!-- N1 / N2 导航菜单，所有页面共用 -->
+    <!-- N1 / N2 Navigation menu, shared by all pages -->
     <nav>
         <div class="logo">Hope Foundation</div>
         <ul>
@@ -19,7 +19,7 @@
 
     <div class="container">
 
-        <!-- H1 静态内容：欢迎语、使命、联系方式 -->
+        <!-- H1 Static content: welcome message, mission, contact information -->
         <section class="hero">
             <h1>Welcome to Hope Foundation</h1>
             <p>Join us in making a difference through our upcoming charity events.</p>
@@ -35,7 +35,7 @@
             </p>
         </section>
 
-        <!-- H2 动态活动列表 -->
+        <!-- H2 Dynamic event list, loaded from API call -->
         <section>
             <h2>Upcoming Events</h2>
             <div id="event-list" class="event-grid"></div>
@@ -49,7 +49,7 @@
     </footer>
 
     <script>
-        // H2 通过 API 获取活动列表
+        // H2 Load event list from the API call
         const API_BASE = 'http://localhost:3000';
 
         async function loadEvents() {
@@ -69,7 +69,7 @@
                 }
 
                 eventList.innerHTML = events.map(event => {
-                    // H5 根据日期判断 past / upcoming
+                    // H5 Determine event past / upcoming status based on date
                     const formattedDate = event.event_date.split('T')[0];
                     const today = new Date();
                     today.setHours(0, 0, 0, 0);

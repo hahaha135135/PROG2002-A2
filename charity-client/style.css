@@ -11,7 +11,7 @@ body {
     line-height: 1.6;
 }
 
-/* 导航栏 N1 / N2 */
+/* Navigation bar N1 / N2 */
 nav {
     background-color: #2c3e50;
     padding: 15px 30px;
@@ -45,7 +45,7 @@ nav ul li a.active {
     background-color: #3498db;
 }
 
-/* 页面主体 */
+/* Page content container */
 .container {
     max-width: 1100px;
     margin: 30px auto;
@@ -57,7 +57,7 @@ h1, h2, h3 {
     margin-bottom: 15px;
 }
 
-/* 首页 H1 静态内容 */
+/* Home Page H1 Static Content */
 .hero {
     background-color: #3498db;
     color: #fff;
@@ -84,7 +84,7 @@ h1, h2, h3 {
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-/* 活动卡片 H2 / H3 / H4 / H5 */
+/* Event Cards H2 / H3 / H4 / H5 */
 .event-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -141,7 +141,7 @@ h1, h2, h3 {
     margin-bottom: 5px;
 }
 
-/* 状态标记 H5 */
+/* Status Badge H5 */
 .status-badge {
     display: inline-block;
     font-size: 12px;
@@ -185,7 +185,7 @@ h1, h2, h3 {
     background-color: #7f8c8d;
 }
 
-/* 搜索页 S1 / S2 / S4 */
+/* Search Form S1 / S2 / S4 */
 .search-form {
     background-color: #fff;
     padding: 25px;
@@ -228,7 +228,7 @@ h1, h2, h3 {
     margin-top: 10px;
 }
 
-/* S8 错误信息 */
+/* S8 Error Message Container */
 .error-message {
     background-color: #f8d7da;
     color: #721c24;
@@ -246,7 +246,7 @@ h1, h2, h3 {
     text-align: center;
 }
 
-/* 详情页 D3 / D4 / D5 */
+/* Event Detail Page D3 / D4 / D5 */
 .event-detail {
     background-color: #fff;
     padding: 30px;
@@ -294,7 +294,7 @@ h1, h2, h3 {
     margin: 20px 0;
 }
 
-/* D7 模态框 */
+/* D7 Modal Overlay */
 .modal-overlay {
     display: none;
     position: fixed;
