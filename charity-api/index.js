@@ -8,7 +8,7 @@ const PORT = 3000;
 app.use(cors());
 app.use(express.json());
 
-// API 1: 获取首页活动列表
+// API 1: Get homepage activity list
 app.get('/api/events', async (req, res) => {
     try {
         const [rows] = await db.query(`
@@ -30,7 +30,7 @@ app.get('/api/events', async (req, res) => {
     }
 });
 
-// API 2: 搜索活动（按日期、地点、类别）
+// API 2: Search activities (by date, location, category)
 app.get('/api/events/search', async (req, res) => {
     try {
         const { date, location, category } = req.query;
@@ -68,7 +68,7 @@ app.get('/api/events/search', async (req, res) => {
         res.status(500).json({ error: 'Database error' });
     }
 });
-// API 3: 获取所有活动类别
+// API 3: Get all activity categories
 app.get('/api/categories', async (req, res) => {
     try {
         const [rows] = await db.query('SELECT * FROM categories ORDER BY category_id');
@@ -78,7 +78,7 @@ app.get('/api/categories', async (req, res) => {
         res.status(500).json({ error: 'Database error' });
     }
 });
-// API 4: 获取单个活动详情
+// API 4: Get details of a single event
 app.get('/api/events/:id', async (req, res) => {
     try {
         const eventId = req.params.id;
@@ -103,7 +103,7 @@ app.get('/api/events/:id', async (req, res) => {
         res.status(500).json({ error: 'Database error' });
     }
 });
-// 启动服务器
+// Start the server
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
 });
